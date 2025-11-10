@@ -9,7 +9,7 @@ def lambda_handler(event, context):
         table.put_item(Item=json.loads(event['body']))
         return {
             'statusCode': 200,
-            'body': json.dumps('Record added!! Great!!')
+            'body': json.dumps('Record added!! Great!!!!!')
         }
     elif event['requestContext']['http']['method'] == 'GET':
         response = table.get_item(Key={'Emp_Id': event['queryStringParameters']['emp_id']})
@@ -17,6 +17,7 @@ def lambda_handler(event, context):
             'statusCode': 200,
             'body': json.dumps(response['Item']+'ITEM')
         }
+
 
 
 
