@@ -12,24 +12,32 @@ pipeline {
             }
         }
         stage('Zip') {
-            withAWS(credentials: 'aws-cred') {
                 steps {
-                    sh 'zip function.zip lambda_handler.py'
-                    sh 'aws s3 ls'
-                    sh 'aws s3 cp function.zip s3://test-s3-080/'
+                    withAWS(region: 'us-east-1', credentials: 'my-aws-credentials') { // Use the ID you defined
+                        script {
+                            // Example: List S3 buckets using AWS CLI
+                            sh 'zip function.zip lambda_handler.py'
+                            sh 'aws s3 ls'
+                            sh 'aws s3 cp function.zip s3://test-s3-080/'
+                        }
+                    }
                 }
-            }
         }
         stage('Deploy') {
             withAWS(credentials: 'aws-cred') {
                 steps {
-                        sh 'aws lambda update-function-code --function-name test --s3-bucket test-s3-080 --s3-key function.zip'
+                    withAWS(region: 'us-east-1', credentials: 'my-aws-credentials') { // Use the ID you defined
+                        script {
+                            sh 'aws lambda update-function-code --function-name test --s3-bucket test-s3-080 --s3-key function.zip'
+                        }
+                    }
                 }
             }
         }
     }
 
 }
+
 
 
 
