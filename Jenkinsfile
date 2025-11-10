@@ -14,6 +14,7 @@ pipeline {
         stage('Zip') {
             steps {
                 sh 'zip function.zip lambda_handler.py'
+                sh 'aws s3 ls'
                 sh 'aws s3 cp function.zip s3://test-s3-080/'
             }
         }
@@ -25,4 +26,5 @@ pipeline {
     }
 
 }
+
 
