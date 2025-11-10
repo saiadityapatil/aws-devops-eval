@@ -11,7 +11,7 @@ pipeline {
                 steps {
                     withAWS(region: 'ap-south-1',credentials: 'aws-cred') {
                         script {
-                            sh 'zip function.zip lambda_handler.py'
+                            sh 'zip function.zip lambda_function.py'
                             sh 'aws s3 ls'
                             sh 'aws s3 cp function.zip s3://test-s3-080/'
                         }
@@ -30,6 +30,7 @@ pipeline {
     }
 
 }
+
 
 
 
