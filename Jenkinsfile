@@ -13,7 +13,7 @@ pipeline {
                         script {
                             sh 'zip function.zip lambda_function.py'
                             sh 'aws s3 ls'
-                            sh 'aws s3 cp function.zip s3://test-s3-080/'
+                            sh 'aws s3 cp function.zip s3://<s3-bucket-name>/'
                         }
                     }
                 }
@@ -26,7 +26,7 @@ pipeline {
 
                             if (functionExists == 0) {
                                 echo "Function exists. Updating..."
-                                sh "aws lambda update-function-code --function-name test --s3-bucket <s3-bucket> --s3-key <zipfile-name>"
+                                sh "aws lambda update-function-code --function-name test --s3-bucket <s3-bucket-name> --s3-key function.zip"
                             } else {
                                 echo "Function does not exist. Creating..."
                                 sh """
@@ -35,8 +35,8 @@ pipeline {
                                         --runtime python3.9 \
                                         --role <role-with-execution-and-dynamodb-access> \
                                         --handler lambda_function.lambda_handler \
-                                        --s3-bucket <s3-bucket> 
-                                        --s3-key <zipfile-name>
+                                        --s3-bucket <s3-bucket-name> 
+                                        --s3-key function.zip
                                 """
                             }
                     }
@@ -45,6 +45,7 @@ pipeline {
     }
 
 }
+
 
 
 
