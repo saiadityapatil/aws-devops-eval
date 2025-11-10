@@ -22,14 +22,30 @@ pipeline {
                 steps {
                     withAWS(region: 'ap-south-1', credentials: 'aws-cred') { // Use the ID you defined
                         script {
-                            sh 'aws lambda update-function-code --function-name test --s3-bucket test-s3-080 --s3-key function.zip'
-                        }
+                            def functionExists = sh(script: "aws lambda get-function --function-name MyLambdaFunction > /dev/null 2>&1", returnStatus: true)
+
+                            if (functionExists == 0) {
+                                echo "Function exists. Updating..."
+                                sh "aws lambda update-function-code --function-name test --s3-bucket <s3-bucket> --s3-key <zipfile-name>"
+                            } else {
+                                echo "Function does not exist. Creating..."
+                                sh """
+                                    aws lambda create-function \
+                                        --function-name MyLambdaFunction \
+                                        --runtime python3.9 \
+                                        --role <role-with-execution-and-dynamodb-access> \
+                                        --handler lambda_function.lambda_handler \
+                                        --s3-bucket <s3-bucket> 
+                                        --s3-key <zipfile-name>
+                                """
+                            }
                     }
                 }
         }
     }
 
 }
+
 
 
 
