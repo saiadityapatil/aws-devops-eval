@@ -14,13 +14,14 @@ pipeline {
         stage('Zip') {
             steps {
                 sh 'zip function.zip lambda_handler.py'
-                sh 'aws s3 cp function.zip s3://aws-devops-evaluation/function.zip'
+                sh 'aws s3 cp function.zip s3://test-s3-080/function.zip'
             }
         }
         stage('Deploy') {
             steps {
-                    sh 'aws lambda update-function-code --function-name  EvaluationLambda --s3-bucket aws-devops-evaluation --s3-key function.zip'
+                    sh 'aws lambda update-function-code --function-name test --s3-bucket test-s3-080 --s3-key function.zip'
             }
         }
     }
+
 }
